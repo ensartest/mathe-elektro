@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lernpaket Mathe · Elektro</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Lernseite Zahlensysteme, Ohm, Wechselspannung, Blindleistung, Leistungsdreieck und USV mit Übungen, Rechenweg, Test und Karteikarten.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232747a6'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='Georgia' font-weight='bold'>φ</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="herorow">
+    <p class="kicker">Mathematik · Schularbeit · Elektrotechnik</p>
+    <button id="themeBtn" class="iconbtn" title="Hell/Dunkel umschalten" aria-label="Hell/Dunkel umschalten">◐</button>
+  </div>
+  <h1>Zahlensysteme, Wechselstrom &amp; Leistungsdreieck</h1>
+  <p class="lede">Der ganze Stoff aus dem Skript Leistungsdreieck, dem Wechselstrom-Skript und deiner Mitschrift: aufbauend erklärt, jede Rechnung Schritt für Schritt, mit Übungen samt Fehlerkorrektur, einem benoteten Test und Karteikarten.</p>
+  <ul class="meta">
+    <li><b>10</b> Kapitel + Theoriefragen</li>
+    <li><b>15</b> Übungsarten mit Rechenweg</li>
+    <li><b>Test</b> 10 aus 60 Aufgaben</li>
+    <li><b>Karteikarten</b> aus deinen Fehlern</li>
+  </ul>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Bereiche">
+  <button class="tab" role="tab" data-tab="lernen">Lernen</button>
+  <button class="tab" role="tab" data-tab="uebungen">Übungen</button>
+  <button class="tab" role="tab" data-tab="test">Test</button>
+  <button class="tab" role="tab" data-tab="karten">Karteikarten<span class="n" id="cardBadge" hidden>0</span></button>
+</nav>
+
+<main>
+  <section id="lernen">
+    <div id="learnProg" class="progress"></div>
+    <ul id="learnNav" class="toc"></ul>
+    <article id="learnBody"></article>
+  </section>
+  <section id="uebungen" hidden>
+    <p class="intro">Jede Übung prüft deine Antwort, sagt dir <b>was</b> falsch ist und <b>warum</b> (typische Fehler werden erkannt), und zeigt den kompletten <b>Rechenweg Schritt für Schritt</b>. Zuerst kommen die Aufgaben aus Mitschrift und Skript, danach unendlich viele Zufallsaufgaben. Kommazahlen darfst du mit Komma oder Punkt eingeben, Rundung auf 2 Nachkommastellen reicht.</p>
+    <div id="exToc" class="toc"></div>
+    <div id="exList"></div>
+  </section>
+  <section id="test" hidden><div id="testBody"></div></section>
+  <section id="karten" hidden>
+    <p class="intro">Hier landen alle Fragen, die du im Test falsch hattest. Lies die Frage, rechne oder überleg dir die Antwort, deck auf und sag ehrlich, ob du sie kannst.</p>
+    <div id="cardBody"></div>
+  </section>
+</main>
+<footer>
+  Quellen: R. Scheumann, Skriptum „Leistungsdreieck“ (APEC3/INFT3) · W. Kippels, „Grundlagen der Wechselstromtechnik“ · deine Mitschrift (Fotos vom Unterricht) · Liste „Theoriefragen zur Schularbeit“. Inhalte sinngemäß zusammengefasst, mit Seitenangabe zum Nachprüfen. Dein Fortschritt bleibt nur in deinem Browser gespeichert.
+</footer>
+</div>
+<script src="js/util.js"></script>
+<script src="js/content.js"></script>
+<script src="js/pool.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
