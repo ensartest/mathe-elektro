@@ -106,49 +106,57 @@ function renderMerk(box) {
 
 /* ═════════════ ÜBUNGEN ═════════════ */
 function exStats() { return store.get('exstats', {}); }
+/* Übungen: pro Thema ein Untertab, alle Aufgaben untereinander */
+const EX_BATCH = 5;
+let exCur = store.get('exTab', EXERCISES[0].id);
+if (!EXERCISES.some(e => e.id === exCur)) exCur = EXERCISES[0].id;
+function exTasksFor(ex, nRand) {
+  if (ex.items && !ex.fixed) return ex.items.map((it, i) => ({ task: { it }, label: `Frage ${i + 1} von ${ex.items.length}` }));
+  const fixed = (ex.fixed || []).map(t => ({ task: t, label: t.label || (t.fromScript ? 'Beispiel aus dem Skript' : 'Aus dem Unterricht') }));
+  const rand = ex.random ? Array.from({ length: nRand }, () => ({ task: ex.random(), label: 'Zufallsaufgabe' })) : [];
+  return fixed.concat(rand);
+}
 function renderExercises() {
-  const wrap = document.getElementById('exList'); wrap.innerHTML = '';
   const toc = document.getElementById('exToc'); toc.innerHTML = '';
-  EXERCISES.forEach((ex, n) => {
-    toc.append(h('button', { onclick: () => document.getElementById('ex-' + ex.id).scrollIntoView({ behavior: 'smooth' }), html: `${n + 1} ${ex.title}` }));
-    const card = h('div', { class: 'excard', id: 'ex-' + ex.id });
-    const st = h('span', { class: 'stat' });
-    const updStat = () => { const s = exStats()[ex.id] || { r: 0, t: 0 }; st.textContent = s.t ? `${s.r}/${s.t} richtig` : ''; };
-    updStat();
-    card.append(h('div', { class: 'exhead' }, h('h3', { html: `${n + 1}. ${ex.title}` }), st), h('p', { class: 'small', html: ex.intro + ' ' + srcList(ex.src) }));
-    const body = h('div', { class: 'exbody' });
-    card.append(body); wrap.append(card);
-    let idx = 0;
-    const load = () => {
-      body.innerHTML = '';
-      let task, label;
-      if (ex.fixed && idx < ex.fixed.length) { task = ex.fixed[idx]; label = `${task.label || 'Aus dem Unterricht'} · Aufgabe ${idx + 1}/${ex.fixed.length}`; }
-      else if (ex.fixedFromItems) { task = { it: ex.items[idx % ex.items.length] }; label = `Frage ${idx % ex.items.length + 1}/${ex.items.length}`; }
-      else { task = ex.random(); label = 'Zufallsaufgabe'; }
-      const c = { area: h('div', { class: 'exarea' }), fb: h('div', { class: 'fb hidden' }) };
-      body.append(h('div', { class: 'tasklabel' }, label));
-      ex.render(task, c);
-      const sol = h('div', { class: 'sol hidden' });
-      body.append(c.area, c.fb, sol);
-      const ctr = h('div', { class: 'ctrls' });
-      let counted = false;
-      const count = ok => { if (counted || ok === null) return; counted = true; const s = exStats(); s[ex.id] = s[ex.id] || { r: 0, t: 0 }; s[ex.id].t++; if (ok) s[ex.id].r++; store.set('exstats', s); updStat(); };
-      if (c.selfAssess) {
-        const yes = h('button', { class: 'btn ok sm', disabled: true, onclick: () => { count(true); next(); } }, '✓ Gewusst');
-        const no = h('button', { class: 'btn bad sm', disabled: true, onclick: () => { count(false); next(); } }, '✗ Nicht gewusst');
-        ctr.append(h('button', { class: 'btn', onclick: () => { c.fb.className = 'fb info'; c.fb.innerHTML = '<div class="fb-t">Musterantwort</div>' + c.selfAssess.answer; yes.disabled = no.disabled = false; } }, 'Musterantwort zeigen'), yes, no);
-      } else {
-        const chk = () => { c.fb.classList.remove('hidden'); const ok = c.onCheck(); count(ok); if (ok === false) solBtn.classList.add('pulse'); };
-        const solBtn = h('button', { class: 'btn ghost', onclick: () => { sol.classList.toggle('hidden'); if (!sol.innerHTML) sol.innerHTML = '<h4>Rechenweg · Schritt für Schritt</h4>' + c.solution(); solBtn.classList.remove('pulse'); } }, 'Rechenweg anzeigen');
-        ctr.append(h('button', { class: 'btn', onclick: chk }, 'Prüfen'), solBtn);
-        c.area.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') chk(); }));
-      }
-      const next = () => { idx++; load(); };
-      ctr.append(h('button', { class: 'btn ghost', onclick: next }, 'Nächste Aufgabe →'));
-      body.append(ctr);
-    };
-    load();
-  });
+  toc.setAttribute('role', 'tablist');
+  EXERCISES.forEach((ex, i) => toc.append(h('button', { class: 'subtab' + (ex.id === exCur ? ' on' : '') + (ex.imp ? ' imp' : ''), role: 'tab', 'aria-selected': String(ex.id === exCur), title: ex.imp ? 'wichtig – kommt oft dran' : null,
+    onclick: () => { exCur = ex.id; store.set('exTab', ex.id); renderExercises(); const t = document.getElementById('exToc'); if (t.getBoundingClientRect().top < 0) t.scrollIntoView(); }, html: `${ex.imp ? '★ ' : ''}${i + 1} ${ex.title}` })));
+  const wrap = document.getElementById('exList'); wrap.innerHTML = '';
+  const n = EXERCISES.findIndex(e => e.id === exCur), ex = EXERCISES[n];
+  const st = h('span', { class: 'stat' });
+  const updStat = () => { const s = exStats()[ex.id] || { r: 0, t: 0 }; st.textContent = s.t ? `${s.r}/${s.t} richtig` : ''; };
+  updStat();
+  const list = h('div', { class: 'tasklist' });
+  wrap.append(h('div', { class: 'excard' }, h('div', { class: 'exhead' }, h('h3', { html: `${n + 1}. ${ex.title}${ex.imp ? ' <span class="tag imp">★ wichtig</span>' : ''}` }), st), h('p', { class: 'small', html: ex.intro + ' ' + srcList(ex.src) }), list));
+  let num = 0;
+  const addTask = ({ task, label }) => {
+    num++;
+    const card = h('div', { class: 'taskcard' });
+    const c = { area: h('div', { class: 'exarea' }), fb: h('div', { class: 'fb hidden' }) };
+    card.append(h('div', { class: 'tasklabel' }, `Aufgabe ${num} · ${label}`));
+    ex.render(task, c);
+    const sol = h('div', { class: 'sol hidden' });
+    card.append(c.area, c.fb, sol);
+    const ctr = h('div', { class: 'ctrls' });
+    let counted = false;
+    const count = ok => { if (counted || ok === null) return; counted = true; const s = exStats(); s[ex.id] = s[ex.id] || { r: 0, t: 0 }; s[ex.id].t++; if (ok) s[ex.id].r++; store.set('exstats', s); updStat(); };
+    if (c.selfAssess) {
+      const rate = ok => { count(ok); yes.disabled = no.disabled = true; card.classList.add(ok ? 'done-ok' : 'done-bad'); };
+      const yes = h('button', { class: 'btn ok sm', disabled: true, onclick: () => rate(true) }, '✓ Gewusst');
+      const no = h('button', { class: 'btn bad sm', disabled: true, onclick: () => rate(false) }, '✗ Nicht gewusst');
+      ctr.append(h('button', { class: 'btn ghost', onclick: () => { c.fb.className = 'fb info'; c.fb.innerHTML = c.selfAssess.answer; if (!counted) yes.disabled = no.disabled = false; } }, 'Musterantwort zeigen'), yes, no);
+    } else {
+      const solBtn = h('button', { class: 'btn ghost', onclick: () => { sol.classList.toggle('hidden'); if (!sol.innerHTML) sol.innerHTML = '<h4>Lösungsweg – Schritt für Schritt</h4>' + c.solution(); solBtn.classList.remove('pulse'); } }, 'Lösungsweg anzeigen');
+      const chk = () => { c.fb.classList.remove('hidden'); const ok = c.onCheck(); count(ok); if (ok === false) solBtn.classList.add('pulse'); if (ok !== null) card.classList.toggle('done-ok', ok === true), card.classList.toggle('done-bad', ok === false); };
+      ctr.append(h('button', { class: 'btn', onclick: chk }, 'Prüfen'), solBtn);
+      c.area.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') chk(); }));
+    }
+    card.append(ctr); list.append(card);
+  };
+  exTasksFor(ex, ex.imp ? 10 : 6).forEach(addTask);
+  if (ex.random && !(ex.items && !ex.fixed)) wrap.append(h('div', { class: 'ctrls morebar' },
+    h('button', { class: 'btn ghost', onclick: () => { for (let i = 0; i < EX_BATCH; i++) addTask({ task: ex.random(), label: 'Zufallsaufgabe' }); } }, `+ ${EX_BATCH} weitere Zufallsaufgaben`),
+    h('button', { class: 'btn ghost', onclick: renderExercises }, '↻ Zufallsaufgaben neu würfeln')));
 }
 
 /* ═════════════ TEST ═════════════ */
@@ -167,7 +175,7 @@ function ansText(q, val) {
 }
 function rightText(q) { return q.type === 'mc' ? q.o[q.a] : q.show; }
 
-function renderTestStart() {
+function renderTestStart0() {
   testState = null;
   const box = document.getElementById('testBody'); box.innerHTML = '';
   const hist = store.get('tests', []);
@@ -185,9 +193,29 @@ function renderTestStart() {
     box.append(h('div', { class: 'scroll' }, t));
   }
 }
+/* ★ = wichtig (w > 1): kommt im Test öfter dran (gewichtete Zufallsauswahl) */
+function wPick(arr, k) { return arr.map(q => ({ q, key: -Math.log(1 - Math.random()) / (q.w || 1) })).sort((x, y) => x.key - y.key).slice(0, k).map(x => x.q); }
+let poolTab = store.get('poolTab', Object.keys(TOPIC)[0]);
+if (!TOPIC[poolTab]) poolTab = Object.keys(TOPIC)[0];
+function renderTestStart() { renderTestStart0(); renderPoolView(document.getElementById('testBody')); }
+function renderPoolView(box) {
+  const sec = h('div', { class: 'poolview' });
+  const draw = () => {
+    sec.innerHTML = '';
+    const nImp = POOL.filter(q => q.w > 1).length;
+    sec.append(h('h3', null, 'Alle Testfragen ansehen'), h('p', { class: 'small' }, `Alle ${POOL.length} Fragen aus dem Pool, nach Thema. ★ = wichtig (${nImp} Fragen) – die kommen im Test ungefähr dreimal so oft dran. Antippen zeigt die Lösung.`));
+    const bar = h('div', { class: 'toc' });
+    Object.entries(TOPIC).forEach(([k, l]) => bar.append(h('button', { class: 'subtab' + (k === poolTab ? ' on' : ''), onclick: () => { poolTab = k; store.set('poolTab', k); draw(); } }, `${l} (${POOL.filter(q => q.t === k).length})`)));
+    sec.append(bar);
+    POOL.filter(q => q.t === poolTab).forEach((q, i) => sec.append(h('details', { class: 'qa' },
+      h('summary', null, `${q.w > 1 ? '★ ' : ''}${i + 1}. ${q.q}`),
+      h('div', { class: 'in', html: (q.type === 'mc' ? '<ul class="cardopts">' + q.o.map((o, j) => `<li class="${j === q.a ? 'right' : ''}">${o}</li>`).join('') + '</ul>' : '') + `<p><b>Antwort:</b> ${rightText(q)}</p><div class="why">${q.why}<br>${srcList(q.src)}</div>` }))));
+  };
+  draw(); box.append(sec);
+}
 function startTest() {
-  const by = t => shuffle(POOL.filter(q => q.t === t));
-  const qs = [...by('zs').slice(0, 3), ...by('ws').slice(0, 3), ...by('lst').slice(0, 4)];
+  const by = (t, k) => wPick(POOL.filter(q => q.t === t), k);
+  const qs = [...by('zs', 3), ...by('ws', 3), ...by('lst', 4)];
   testState = { qs: qs.map(q => ({ q, order: q.type === 'mc' ? shuffle(q.o.map((_, i) => i)) : null, val: null })), done: false };
   renderTest();
 }

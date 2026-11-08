@@ -271,3 +271,18 @@ details.qa .in{padding:2px 16px 12px;border-top:1px dashed var(--line)}
   .flash{padding:16px}
   .eq{font-size:14px}
 }
+
+/* Untertabs Übungen & Fragenpool */
+.toc .subtab{font:600 13.5px/1.3 var(--sans);color:var(--muted)}
+.toc .subtab.imp{color:var(--text)}
+.toc .subtab.on{background:var(--ink);border-color:var(--ink);color:var(--on-accent)}
+#exToc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 47px);z-index:4;background:var(--bg);padding:8px 0;margin:8px 0 0;max-height:40vh;overflow-y:auto}
+.excard{border-top:0;padding-top:12px}
+.taskcard{padding:18px 0 14px;border-top:1px dashed var(--line);border-left:3px solid transparent;padding-left:12px;margin-left:-15px}
+.taskcard.done-ok{border-left-color:var(--green)}
+.taskcard.done-bad{border-left-color:var(--red)}
+.morebar{padding:14px 0;border-top:1px dashed var(--line)}
+.tag.imp{background:var(--amber-soft);color:var(--amber);vertical-align:3px}
+.poolview{margin-top:30px;padding-top:6px;border-top:1px solid var(--line)}
+.poolview details.qa .in .cardopts{margin:8px 0}
+@media (max-width:600px){#exToc{max-height:30vh}.taskcard{margin-left:-12px;padding-left:9px}}

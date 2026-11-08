@@ -667,3 +667,6 @@ const EXERCISES = [
       c.selfAssess = { answer: t.it.a };
     } }
 ];
+
+/* ★ wichtige Übungsarten: mehr Zufallsaufgaben in der Liste */
+IMP_EX.forEach(id => { const e = EXERCISES.find(x => x.id === id); if (e) e.imp = true; });

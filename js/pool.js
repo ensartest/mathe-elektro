@@ -1,4 +1,4 @@
-/* Testpool: 60 Aufgaben. t = Bereich (zs = Zahlensysteme & Mathe-Werkzeuge, ws = Ohm & Wechselstrom, lst = Leistung, Kompensation, η, USV)
+/* Testpool: 60 + 22 Zusatzaufgaben. w = Gewicht (★ wichtig = 3). t = Bereich (zs = Zahlensysteme & Mathe-Werkzeuge, ws = Ohm & Wechselstrom, lst = Leistung, Kompensation, η, USV)
    mc: o = Optionen, a = Index der richtigen
    in mit val: Zahl (1 % Toleranz, tol überschreibt), unit = Einheit, show = Musterantwort
    in mit acc + base: Binär/Hex-Antwort */
@@ -67,5 +67,37 @@ const POOL = [
 { id: 'l19', t: 'lst', type: 'in', q: 'Ein Akku hat 12 V und 7 Ah. Wie viel Energie speichert er?', val: 84, unit: 'Wh', show: '84 Wh', why: 'E = U · Ah = 12 · 7 = 84 Wh.', src: [['MS', 'USV']] },
 { id: 'l20', t: 'lst', type: 'in', q: 'Ein Server braucht 500 W bei cos φ = 0,9. Welche Scheinleistung muss die USV liefern?', val: 555.56, unit: 'VA', show: '555,56 VA', why: 'S = P / cos φ = 500 / 0,9 = 555,56 VA.', src: [['MS', 'USV']] },
 { id: 'l21', t: 'lst', type: 'in', q: 'Batterieenergie 240 Wh, Last 480 VA. Wie lange hält die USV (in Minuten)?', val: 30, unit: 'min', show: '30 min', why: 't = 240 / 480 = 0,5 h = 30 min.', src: [['MS', 'USV']] },
-{ id: 'l22', t: 'lst', type: 'mc', q: 'Warum wird eine USV in VA (Scheinleistung) ausgelegt?', o: ['Sie muss den ganzen Strom liefern, auch den Blindanteil', 'VA ist immer kleiner als W', 'Batterien werden in VA gemessen', 'Die USV liefert nur Blindleistung'], a: 0, why: 'I = S / U: Wechselrichter und Leitungen müssen den gesamten Strom tragen.', src: [['MS', 'USV'], ['TF', 'Liste']] }
+{ id: 'l22', t: 'lst', type: 'mc', q: 'Warum wird eine USV in VA (Scheinleistung) ausgelegt?', o: ['Sie muss den ganzen Strom liefern, auch den Blindanteil', 'VA ist immer kleiner als W', 'Batterien werden in VA gemessen', 'Die USV liefert nur Blindleistung'], a: 0, why: 'I = S / U: Wechselrichter und Leitungen müssen den gesamten Strom tragen.', src: [['MS', 'USV'], ['TF', 'Liste']] },
+
+/* ─────────── Zusatzfragen zu den wichtigsten Themen (★, w: 3) ─────────── */
+{ id: 'n15', t: 'zs', w: 3, type: 'in', base: true, q: 'Rechne 1111 1111₂ ins Hexadezimalsystem um.', acc: ['FF'], show: 'FF₁₆', why: '1111 = 15 = F, zweimal → FF (= 255).', src: [['MS', 'Zahlensysteme 15.09.']] },
+{ id: 'n16', t: 'zs', w: 3, type: 'in', q: 'Rechne 0x1F4 ins Dezimalsystem um.', val: 500, tol: 0.0001, unit: '', show: '500', why: '1 · 256 + F (= 15) · 16 + 4 · 1 = 256 + 240 + 4 = 500.', src: [['MS', 'Zahlensysteme 15.09.']] },
+{ id: 'n17', t: 'zs', w: 3, type: 'mc', q: 'Was unterscheidet technische von wissenschaftlicher Notation?', o: ['Technisch: Exponent durch 3 teilbar (passt zu k, M, m, µ); wissenschaftlich: genau eine Ziffer vor dem Komma', 'Technisch nutzt Zehnerpotenzen, wissenschaftlich nicht', 'Wissenschaftlich: Exponent durch 3 teilbar', 'Es gibt keinen Unterschied'], a: 0, why: '257,3 · 10⁶ Hz (technisch = 257,3 MHz) ist dasselbe wie 2,573 · 10⁸ Hz (wissenschaftlich).', src: [['MS', 'Notation'], ['TF', 'Liste']] },
+{ id: 'n18', t: 'zs', w: 3, type: 'in', base: true, q: 'Rechne 156₁₀ ins Binärsystem um.', acc: ['10011100'], show: '1001 1100₂', why: '156 = 128 + 16 + 8 + 4 → 1001 1100.', src: [['MS', 'Zahlensysteme 15.09.']] },
+{ id: 'n22', t: 'zs', w: 3, type: 'in', base: true, q: 'Rechne 3C₁₆ ins Binärsystem um.', acc: ['111100'], show: '0011 1100₂', why: '3 = 0011, C = 12 = 1100 → 0011 1100.', src: [['MS', 'Zahlensysteme 15.09.']] },
+{ id: 'n10', t: 'ws', w: 3, type: 'in', q: 'U_ss = 24 V. Wie groß ist der Effektivwert?', val: 8.485, unit: 'V', show: '8,49 V', why: 'Zuerst Û = 24 / 2 = 12 V, dann U_eff = 12 / √2 = 8,49 V.', src: [['WS', 5], ['WS', 8]] },
+{ id: 'n11', t: 'ws', w: 3, type: 'in', q: 'Eine Periode dauert T = 20 ms. Wie groß ist die Frequenz?', val: 50, unit: 'Hz', show: '50 Hz', why: 'f = 1 / T = 1 / 0,02 s = 50 Hz.', src: [['WS', 5]] },
+{ id: 'n21', t: 'ws', w: 3, type: 'in', q: 'Û = 10 V. Wie groß ist U_eff?', val: 7.071, unit: 'V', show: '7,07 V', why: 'U_eff = Û / √2 = 10 / 1,4142 = 7,07 V.', src: [['WS', 8]] },
+{ id: 'n12', t: 'ws', w: 3, type: 'mc', q: 'Wie unterscheidet sich Blindleistung von Wirkleistung?', o: ['Blindleistung pendelt zwischen Netz und C/L hin und her und verrichtet keine Arbeit; Wirkleistung wird wirklich umgesetzt', 'Blindleistung ist die Leistung, die man auf der Stromrechnung zahlt', 'Blindleistung entsteht nur bei Gleichstrom', 'Beide sind dasselbe, nur andere Einheit'], a: 0, why: 'Q (var) wird kurz im Feld gespeichert und zurückgegeben, P (W) wird in Wärme, Licht, Bewegung umgewandelt.', src: [['WS', 13], ['TF', 'Liste']] },
+{ id: 'n13', t: 'ws', w: 3, type: 'mc', q: 'Die Frequenz steigt. Was passiert mit dem Blindwiderstand eines Kondensators?', o: ['Er sinkt', 'Er steigt', 'Er bleibt gleich', 'Er wird unendlich'], a: 0, why: 'X_C = 1/(2π f C): f steht im Nenner.', src: [['WS', 14]] },
+{ id: 'n14', t: 'ws', w: 3, type: 'in', q: 'Spule L = 100 mH bei f = 1000 Hz. Wie groß ist X_L?', val: 628.32, unit: 'Ω', show: '628,32 Ω', why: 'X_L = 2π · 1000 · 0,1 = 628,32 Ω (mH in H umrechnen!).', src: [['WS', 15]] },
+{ id: 'n01', t: 'lst', w: 3, type: 'in', q: 'Motor: P_ab = 2 kW, η = 80 %, cos φ = 0,8, U = 230 V. Wie groß ist der Strom?', val: 13.587, unit: 'A', show: '13,59 A', why: 'P_zu = 2 / 0,8 = 2,5 kW → S = 2,5 / 0,8 = 3,125 kVA → I = 3125 / 230 = 13,59 A.', src: [['MS', 'Aufgaben Leistung']] },
+{ id: 'n02', t: 'lst', w: 3, type: 'in', q: 'Eine 1500-VA-USV wird mit 1200 VA belastet. Wie hoch ist die Auslastung?', val: 80, unit: '%', show: '80 %', why: '1200 / 1500 · 100 = 80 %.', src: [['MS', 'USV']] },
+{ id: 'n03', t: 'lst', w: 3, type: 'in', q: 'Eine USV hat 2 Akkus à 12 V / 9 Ah. Wie viel Energie speichern sie zusammen?', val: 216, unit: 'Wh', show: '216 Wh', why: 'E = 2 · 12 V · 9 Ah = 216 Wh.', src: [['MS', 'USV']] },
+{ id: 'n19', t: 'lst', w: 3, type: 'in', q: 'An einer USV hängen ein Server (380 W, cos φ = 0,95) und ein Switch (60 W, cos φ = 0,6). Wie groß ist S_ges?', val: 500, unit: 'VA', show: '500 VA', why: '380/0,95 = 400 VA, 60/0,6 = 100 VA → 500 VA.', src: [['MS', 'USV']] },
+{ id: 'n04', t: 'lst', w: 3, type: 'in', q: 'U = 230 V, I = 5 A, P = 920 W. Wie groß ist cos φ?', val: 0.8, tol: 0.006, unit: '', show: '0,8', why: 'S = 230 · 5 = 1150 VA → cos φ = 920 / 1150 = 0,8.', src: [['LD', 3]] },
+{ id: 'n05', t: 'lst', w: 3, type: 'in', q: 'S = 10 kVA, cos φ = 0,6. Wie groß ist die Blindleistung Q?', val: 8, unit: 'kvar', show: '8 kvar', why: 'P = 10 · 0,6 = 6 kW → Q = √(10² − 6²) = √64 = 8 kvar.', src: [['LD', 2]] },
+{ id: 'n20', t: 'lst', w: 3, type: 'in', q: 'P = 6 kW, Q_L = 8 kvar. Ein Kondensator mit Q_C = 8 kvar wird parallel geschaltet. Wie groß ist cos φ danach?', val: 1, tol: 0.006, unit: '', show: '1', why: 'Q_neu = 8 − 8 = 0 → S = P → cos φ = 1 (voll kompensiert).', src: [['WS', 53]] },
+{ id: 'n06', t: 'lst', w: 3, type: 'mc', q: 'Was versteht man unter Scheinleistung?', o: ['S = U · I in VA: die geometrische Summe aus P und Q, die das Netz liefern muss', 'Die Leistung, die nur scheinbar fließt und keine Rolle spielt', 'Die Summe P + Q in W', 'Die Leistung der Batterie in Wh'], a: 0, why: 'S² = P² + Q². Danach werden Leitungen, Trafos und USVs ausgelegt.', src: [['LD', 2], ['TF', 'Liste']] },
+{ id: 'n07', t: 'lst', w: 3, type: 'mc', q: 'Welche Größen braucht man für die USV-Betriebsdauer?', o: ['Batterieenergie (Anzahl · V · Ah), Last (P und cos φ bzw. S) und Wirkungsgrad', 'Nur die Netzfrequenz', 'Nur die Nennleistung der USV in VA', 'Nur die Anzahl der Geräte'], a: 0, why: 't = E / S (bzw. genauer E · η / P).', src: [['MS', 'USV'], ['TF', 'Liste']] },
+{ id: 'n08', t: 'lst', w: 3, type: 'mc', q: 'Wie verändert sich der Leistungsfaktor durch Kompensation?', o: ['Er steigt Richtung 1', 'Er sinkt Richtung 0', 'Er bleibt gleich', 'Er wird größer als 1'], a: 0, why: 'Q wird kleiner, S nähert sich P → cos φ = P/S steigt.', src: [['WS', 53], ['TF', 'Liste']] },
+{ id: 'n09', t: 'lst', w: 3, type: 'mc', q: 'Warum ist bei einer USV der Wirkungsgrad wichtig?', o: ['Verluste verkürzen die Laufzeit und erzeugen dauernd Wärme und Stromkosten', 'Er bestimmt die Netzfrequenz', 'Er ist egal, weil die USV nur bei Stromausfall läuft', 'Er erhöht die Batteriekapazität'], a: 0, why: 'Nur E · η kommt bei den Geräten an, und eine USV läuft rund um die Uhr.', src: [['TF', 'Liste']] }
 ];
+
+/* Wichtige Fragen aus dem ersten Pool ebenfalls markieren (★, kommen im Test öfter dran) */
+['z02', 'z03', 'z04', 'z05', 'z07', 'z10', 'z11', 'w07', 'w08', 'w09', 'w11', 'w12', 'w14', 'w16', 'w17', 'l02', 'l03', 'l04', 'l05', 'l08', 'l09', 'l10', 'l11', 'l12', 'l14', 'l20', 'l21', 'l22']
+  .forEach(id => { const q = POOL.find(x => x.id === id); if (q) q.w = 3; });
+
+/* ★ wichtige Übungsarten (mehr Zufallsaufgaben in der Liste) – EXERCISES wird später geladen */
+var IMP_EX = ['base', 'not', 'ac', 'x', 'ld', 'komp', 'eta', 'usv', 'theo'];
+
